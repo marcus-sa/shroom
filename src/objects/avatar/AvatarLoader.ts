@@ -5,7 +5,6 @@ import {
   IAvatarLoader,
 } from "../../interfaces/IAvatarLoader";
 import { HitTexture } from "../hitdetection/HitTexture";
-import Bluebird from "bluebird";
 import { AvatarAnimationData } from "./data/AvatarAnimationData";
 import { FigureMapData } from "./data/FigureMapData";
 import { AvatarOffsetsData } from "./data/AvatarOffsetsData";
@@ -302,21 +301,14 @@ interface EffectCacheEntry {
 async function initializeDefaultAvatarDependencies(
   resourcePath: string
 ): Promise<AvatarExternalDependencies> {
-  const {
-    animationData,
-    figureMap,
-    figureData,
-    partSetsData,
-    actionsData,
-    geometry,
-  } = await Bluebird.props({
-    animationData: AvatarAnimationData.default(),
-    figureData: FigureData.fromUrl(`${resourcePath}/figuredata.xml`),
-    figureMap: FigureMapData.fromUrl(`${resourcePath}/figuremap.xml`),
-    partSetsData: AvatarPartSetsData.default(),
-    actionsData: AvatarActionsData.default(),
-    geometry: AvatarGeometryData.default(),
-  });
+  const [figureData, figureMap] = await Promise.all([
+    FigureData.fromUrl(`${resourcePath}/figuredata.xml`),
+    FigureMapData.fromUrl(`${resourcePath}/figuremap.xml`),
+  ])
+  const partSetsData = AvatarPartSetsData.default();
+  const actionsData = AvatarActionsData.default();
+  const geometry = AvatarGeometryData.default();
+  const animationData = AvatarAnimationData.default();
 
   return {
     animationData,

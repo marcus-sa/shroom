@@ -1,5 +1,5 @@
-import * as PIXI from "pixi.js";
+import { Texture } from "pixi.js";
 
-export function applyTextureProperties(texture: PIXI.Texture) {
-  texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+export function applyTextureProperties(texture: Texture) {
+  texture.baseTexture.scaleMode = 'nearest';
 }

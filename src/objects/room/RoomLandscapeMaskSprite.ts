@@ -1,7 +1,6 @@
-import * as PIXI from "pixi.js";
-import { Room } from "./Room";
+import { ColorMatrixFilter, Container, Renderer, RenderTexture, Sprite } from 'pixi.js';
 
-const negativeFilter = new PIXI.filters.ColorMatrixFilter();
+const negativeFilter = new ColorMatrixFilter();
 negativeFilter.negative(false);
 
 /**
@@ -18,14 +17,14 @@ negativeFilter.negative(false);
  * we need a sprite which is able to combine multiple sprites into a single
  * sprite.
  *
- * This Sprite renders its sub-sprites through `PIXI.RenderTexture`
+ * This Sprite renders its sub-sprites through `RenderTexture`
  * into a single texture, and uses that as a texture for itself.
  */
-export class RoomLandscapeMaskSprite extends PIXI.Sprite {
-  private _sprites: Set<PIXI.Sprite> = new Set();
+export class RoomLandscapeMaskSprite extends Sprite {
+  private _sprites: Set<Sprite> = new Set();
   private _roomWidth: number;
   private _roomHeight: number;
-  private _renderer: PIXI.Renderer;
+  private _renderer: Renderer;
   private _roomBounds: {
     minX: number;
     minY: number;
@@ -38,7 +37,7 @@ export class RoomLandscapeMaskSprite extends PIXI.Sprite {
     renderer,
   }: {
     roomBounds: { minX: number; minY: number; maxX: number; maxY: number };
-    renderer: PIXI.Renderer;
+    renderer: Renderer;
   }) {
     super();
     this._roomBounds = roomBounds;
@@ -47,32 +46,32 @@ export class RoomLandscapeMaskSprite extends PIXI.Sprite {
     this._renderer = renderer;
   }
 
-  addSprite(element: PIXI.Sprite) {
+  addSprite(element: Sprite) {
     this._sprites.add(element);
     this._updateTexture();
   }
 
-  updateSprite(element: PIXI.Sprite) {
+  updateSprite(element: Sprite) {
     if (!this._sprites.has(element)) return;
 
     this._updateTexture();
   }
 
-  removeSprite(element: PIXI.Sprite) {
+  removeSprite(element: Sprite) {
     this._sprites.delete(element);
     this._updateTexture();
   }
 
   private _updateTexture() {
-    const texture = PIXI.RenderTexture.create({
+    const texture = RenderTexture.create({
       width: this._roomWidth * 2,
       height: this._roomHeight,
     });
 
-    const container = new PIXI.Container();
+    const container = new Container();
     this._sprites.forEach((sprite) => {
       // We apply a negative filter to the mask sprite, because the mask assets
-      // of the furniture are usually completly black. `pixi.js` requires white
+      // of the furniture are usually completly black. `js` requires white
       // images to mask an image.
       sprite.filters = [negativeFilter];
       container.addChild(sprite);
@@ -84,7 +83,11 @@ export class RoomLandscapeMaskSprite extends PIXI.Sprite {
     container.x = -this._roomBounds.minX;
     this.x = this._roomBounds.minX;
 
-    this._renderer.render(container, texture);
+    this._renderer.render({
+      container,
+    });
+
+    this._renderer.render({ container, target: texture });
 
     this.texture = texture;
   }

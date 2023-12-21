@@ -63,7 +63,7 @@ export class RoomModelVisualization
   private _tileHeight = 8;
   private _wallHeight = 116;
 
-  private _onActiveTileChange = new Subject<RoomPosition>();
+  private _onActiveTileChange = new Subject<RoomPosition | undefined>();
   private _onActiveWallChange = new Subject<
     | {
         roomX: number;
@@ -114,7 +114,7 @@ export class RoomModelVisualization
 
     this.addChild(this._positionalContainer);
 
-    new EventManagerContainer(this._application, this._eventManager);
+    // new EventManagerContainer(this._application, this._eventManager);
 
     this._updateHeightmap();
 
@@ -384,9 +384,10 @@ export class RoomModelVisualization
   }
 
   private _setCache(cache: boolean) {
-    [this._tileLayer, this._wallLayer].forEach(
-      (container) => (container.cacheAsBitmap = cache)
-    );
+    // Containers can no longer be cached as bitmaps
+    // [this._tileLayer, this._wallLayer].forEach(
+    //   (container) => (container.cacheAsBitmap = cache)
+    // );
   }
 
   private _getLargestWallHeight() {

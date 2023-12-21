@@ -14,7 +14,7 @@ interface Props {
 
 export class Tile extends PIXI.Container implements IRoomPart {
   private _container: PIXI.Container | undefined;
-  private _sprites: PIXI.DisplayObject[] = [];
+  private _sprites: PIXI.Container[] = [];
 
   private _texture: PIXI.Texture | undefined;
   private _color: string | undefined;

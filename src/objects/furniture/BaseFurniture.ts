@@ -447,7 +447,7 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
       }
 
       this._unknownSprite.zIndex = this.zIndex;
-      this.dependencies.visualization.container.addChild(this._unknownSprite);
+      this.dependencies.visualization.container.addChild(this._unknownSprite as unknown as PIXI.Container);
       this._updatePosition();
     }
   }
@@ -567,5 +567,5 @@ export class BaseFurniture implements IFurnitureEventHandlers, IEventGroup {
 
 export interface IFurnitureRoomVisualization {
   container: PIXI.Container;
-  addMask(maskId: string, element: PIXI.DisplayObject): MaskNode;
+  addMask(maskId: string, element: PIXI.Container): MaskNode;
 }

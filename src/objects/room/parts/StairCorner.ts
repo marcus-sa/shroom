@@ -54,7 +54,7 @@ export class StairCorner extends PIXI.Container implements IRoomPart {
     this.destroySprites();
   }
 
-  private _createStairBoxFront(index: number): PIXI.DisplayObject[] {
+  private _createStairBoxFront(index: number): PIXI.Container[] {
     const baseXLeft = +stairBase * index;
     const baseYLeft = -stairBase * index * 1.5;
 

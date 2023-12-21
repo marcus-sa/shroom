@@ -11,6 +11,7 @@ import { IEventManager } from "../../events/interfaces/IEventManager";
 import { IEventManagerEvent } from "../../events/interfaces/IEventManagerEvent";
 import { IEventTarget } from "../../events/interfaces/IEventTarget";
 import { Rectangle } from "../IRoomRectangle";
+import { UpdateTransformOptions } from 'pixi.js/lib/scene/container/Container';
 
 export class TileCursor
   extends PIXI.Container
@@ -24,15 +25,15 @@ export class TileCursor
 
   constructor(
     private _eventManager: IEventManager,
-    private _position: RoomPosition,
+    private _roomPosition: RoomPosition,
     private onClick: (position: RoomPosition) => void,
     private onOver: (position: RoomPosition) => void,
     private onOut: (position: RoomPosition) => void
   ) {
     super();
-    this._roomX = _position.roomX;
-    this._roomY = _position.roomY;
-    this._roomZ = _position.roomZ;
+    this._roomX = _roomPosition.roomX;
+    this._roomY = _roomPosition.roomY;
+    this._roomZ = _roomPosition.roomZ;
     this._graphics = this._createGraphics();
     this._updateGraphics();
 
@@ -114,9 +115,11 @@ export class TileCursor
   }
 
   updateTransform() {
-    super.updateTransform();
+    super.updateTransform({});
 
     this._subject.next(this._getCurrentRectangle());
+
+    return this;
   }
 
   private _getCurrentRectangle(): Rectangle {
@@ -155,9 +158,9 @@ export class TileCursor
     this._updateGraphics();
 
     if (hover) {
-      this.onOver(this._position);
+      this.onOver(this._roomPosition);
     } else {
-      this.onOut(this._position);
+      this.onOut(this._roomPosition);
     }
   }
 
@@ -186,10 +189,10 @@ function drawBorder(
   graphics.lineTo(points.p4.x, points.p4.y + offsetY);
   graphics.endFill();
 
-  graphics.beginHole();
+  graphics.beginFill(0x000000); // Use a color that contrasts with the background
   graphics.moveTo(points.p1.x + 6, points.p1.y + offsetY);
   graphics.lineTo(points.p2.x, points.p2.y + 3 + offsetY);
   graphics.lineTo(points.p3.x - 6, points.p3.y + offsetY);
   graphics.lineTo(points.p4.x, points.p4.y - 3 + offsetY);
-  graphics.endHole();
+  graphics.endFill();
 }

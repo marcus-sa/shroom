@@ -1,20 +1,8 @@
-import * as PIXI from "pixi.js";
+import { Assets, Texture } from 'pixi.js';
 import { applyTextureProperties } from "./applyTextureProperties";
 
-export async function loadRoomTexture(url: string): Promise<PIXI.Texture> {
-  const image = new Image();
-
-  image.crossOrigin = "anonymous";
-  image.src = url;
-
-  await new Promise<void>((resolve) => {
-    image.onload = () => {
-      resolve();
-    };
-  });
-
-  const texture = PIXI.Texture.from(image);
+export async function loadRoomTexture(url: string): Promise<Texture> {
+  const texture = await Assets.load(url);
   applyTextureProperties(texture);
-
   return texture;
 }

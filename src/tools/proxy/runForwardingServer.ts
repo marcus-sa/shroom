@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import { createConnection } from "net";
+// @ts-nocheck
 import ByteBuffer from "bytebuffer";
 
 import { createServer } from "https";

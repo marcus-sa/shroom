@@ -465,7 +465,7 @@ class FurnitureVisualizationLayer
           sprite.visible = false;
         }
         sprite.blendMode =
-          layer.ink === "ADD" ? PIXI.BLEND_MODES.ADD : PIXI.BLEND_MODES.NORMAL;
+          layer.ink === "ADD" ? 'add' : 'normal';
       }
     }
 

@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Assets, Spritesheet, Texture } from 'pixi.js';
 
 import { IAssetBundle } from "../../assets/IAssetBundle";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
@@ -17,7 +17,7 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
     assets: IFurnitureAssetsData;
     visualization: IFurnitureVisualizationData;
     index: IFurnitureIndexData;
-    spritesheet: PIXI.Spritesheet;
+    spritesheet: Spritesheet;
   }>;
 
   constructor(private _assetBundle: IAssetBundle) {
@@ -55,17 +55,11 @@ export class JsonFurnitureAssetBundle implements IFurnitureAssetBundle {
 
     const blob = await this._assetBundle.getBlob("spritesheet.png");
     const imageUrl = await loadImageFromBlob(blob);
-    const baseTextureImage = await loadImageFromUrl(imageUrl);
+    const baseTexture = await Assets.load<Texture>(imageUrl);
 
-    const baseTexture = PIXI.BaseTexture.from(baseTextureImage);
+    const spritesheet = new Spritesheet(baseTexture, json.spritesheet);
 
-    const spritesheet = new PIXI.Spritesheet(baseTexture, json.spritesheet);
-
-    await new Promise<void>((resolve) => {
-      spritesheet.parse(() => {
-        resolve();
-      });
-    });
+    await spritesheet.parse();
 
     return {
       assets: new JsonFurnitureAssetsData(json.assets),

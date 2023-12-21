@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { applyTextureProperties } from "../../util/applyTextureProperties";
 import { loadImageFromBlob } from "../../util/loadImageFromBlob";
-import { HitSprite } from "./HitSprite";
+import { Assets } from 'pixi.js';
 
 export class HitTexture {
   private _texture: PIXI.Texture;
@@ -23,35 +23,11 @@ export class HitTexture {
 
   static async fromBlob(blob: Blob) {
     const url = await loadImageFromBlob(blob);
-
     return HitTexture.fromUrl(url);
   }
 
   static async fromUrl(imageUrl: string) {
-    const image = new Image();
-
-    // We set the crossOrigin here so the image element
-    // can fetch and display images hosted on another origin.
-    // Thanks to @danielsolartech for reporting.
-
-    // TODO: Add option to configure this somewhere?
-    image.crossOrigin = "anonymous";
-
-    image.src = imageUrl;
-
-    await new Promise<{
-      width: number;
-      height: number;
-    }>((resolve, reject) => {
-      image.onload = () => {
-        resolve({ width: image.width, height: image.height });
-      };
-
-      image.onerror = (value) => reject(value);
-    });
-
-    const texture = PIXI.Texture.from(image);
-
+    const texture = await Assets.load<PIXI.Texture>(imageUrl);
     return new HitTexture(texture);
   }
 
@@ -63,9 +39,9 @@ export class HitTexture {
     x: number,
     y: number,
     transform: { x: number; y: number },
-    options: { mirrorHorizonally?: boolean } = { mirrorHorizonally: false }
+    options: { mirrorHorizontally?: boolean } = { mirrorHorizontally: false }
   ) {
-    if (options.mirrorHorizonally) {
+    if (options.mirrorHorizontally) {
       x = -(x - transform.x);
     } else {
       x = x - transform.x;
@@ -75,9 +51,9 @@ export class HitTexture {
     const baseTexture = this._texture.baseTexture;
     const hitmap = this._getHitMap();
 
-    const dx = Math.round(this._texture.orig.x + x * baseTexture.resolution);
-    const dy = Math.round(this._texture.orig.y + y * baseTexture.resolution);
-    const ind = dx + dy * baseTexture.realWidth;
+    const dx = Math.round(this._texture.frame.x + x * baseTexture.resolution);
+    const dy = Math.round(this._texture.frame.y + y * baseTexture.resolution);
+    const ind = dx + dy * baseTexture.width;
     const ind1 = ind % 32;
     const ind2 = (ind / 32) | 0;
     return (hitmap[ind2] & (1 << ind1)) !== 0;

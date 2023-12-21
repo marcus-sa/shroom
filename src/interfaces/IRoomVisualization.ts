@@ -1,19 +1,21 @@
-import { IRoomPart } from "../objects/room/parts/IRoomPart";
-import { RoomLandscapeMaskSprite } from "../objects/room/RoomLandscapeMaskSprite";
+import type { Container, Sprite } from 'pixi.js';
+
+import type { IRoomPart } from "../objects/room/parts/IRoomPart";
+import type { RoomLandscapeMaskSprite } from "../objects/room/RoomLandscapeMaskSprite";
 
 export interface IRoomVisualization {
-  container: PIXI.Container;
-  behindWallContainer: PIXI.Container;
-  landscapeContainer: PIXI.Container;
-  floorContainer: PIXI.Container;
-  wallContainer: PIXI.Container;
+  container: Container;
+  behindWallContainer: Container;
+  landscapeContainer: Container;
+  floorContainer: Container;
+  wallContainer: Container;
 
   addPart(part: IRoomPart): PartNode;
-  addMask(id: string, element: PIXI.Sprite): MaskNode;
+  addMask(id: string, element: Sprite): MaskNode;
 }
 
 export type MaskNode = {
-  sprite: PIXI.Sprite;
+  sprite: Sprite;
   update: () => void;
   remove: () => void;
 };

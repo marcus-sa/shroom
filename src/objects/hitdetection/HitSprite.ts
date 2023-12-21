@@ -8,6 +8,7 @@ import { IEventTarget } from "../events/interfaces/IEventTarget";
 import { Hitmap } from "../furniture/util/loadFurni";
 import { Rectangle } from "../room/IRoomRectangle";
 import { HitTexture } from "./HitTexture";
+import { UpdateTransformOptions } from 'pixi.js/lib/scene/container/Container';
 
 export type HitEventHandler = (event: IEventManagerEvent) => void;
 
@@ -106,7 +107,7 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
     this._eventEmitter.trigger("pointerout", event);
   }
 
-  createDebugSprite(): PIXI.Sprite | undefined {
+  createDebugSprite(): PIXI.TilingSprite | undefined {
     if (this._hitTexture == null) return;
 
     const hitMap = this._hitTexture.getHitMap();
@@ -169,7 +170,7 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
         transform: { x: number; y: number }
       ) =>
         value.hits(x, y, transform, {
-          mirrorHorizonally: this._mirrored,
+          mirrorHorizontally: this._mirrored,
         });
     }
   }
@@ -226,9 +227,9 @@ export class HitSprite extends PIXI.Sprite implements IEventTarget {
   }
 
   updateTransform() {
-    super.updateTransform();
-
+    super.updateTransform({});
     this._rectangleSubject.next(this.getHitBox());
+    return this;
   }
 }
 

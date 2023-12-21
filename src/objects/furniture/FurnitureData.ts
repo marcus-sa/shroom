@@ -3,6 +3,7 @@ import {
   FurnitureInfo,
   IFurnitureData,
 } from "../../interfaces/IFurnitureData";
+// @ts-nocheck
 import { parseStringPromise } from "xml2js";
 import { formatFurnitureData } from "../../util/furnitureDataTransformers";
 import { IFurniture } from "./IFurniture";

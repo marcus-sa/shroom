@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 import { IEventManager } from "../objects/events/interfaces/IEventManager";
 import { ILandscapeContainer } from "../objects/room/ILandscapeContainer";
 import { Room } from "../objects/room/Room";

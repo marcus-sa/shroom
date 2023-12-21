@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { IRoomPart } from "./IRoomPart";
 import { RoomPartData } from "./RoomPartData";
+import { FederatedEvent, FederatedMouseEvent } from 'pixi.js';
 
 export class WallLeft extends PIXI.Container implements IRoomPart {
   protected _offsets: { x: number; y: number } = { x: 0, y: 0 };
@@ -18,7 +19,7 @@ export class WallLeft extends PIXI.Container implements IRoomPart {
   private _hideBorder = false;
   private _roomZ = 0;
 
-  private _hitAreaElement: PIXI.DisplayObject | undefined;
+  private _hitAreaElement: PIXI.Container | undefined;
 
   constructor(private props: WallProps) {
     super();
@@ -90,15 +91,12 @@ export class WallLeft extends PIXI.Container implements IRoomPart {
 
     this.addChild(top);
 
-    const graphics = new PIXI.Graphics();
-    graphics.beginFill(0xff00ff);
-    graphics.drawPolygon(hitArea);
+    let graphics = new PIXI.Graphics().fill(0xff00ff).poly(hitArea.points);
     graphics.alpha = this._drawHitArea ? 1 : 0;
-    graphics.endFill();
 
-    const handleMoveEvent = (event: PIXI.InteractionEvent) => {
+    const handleMoveEvent = (event: FederatedMouseEvent) => {
       if (event.target === graphics) {
-        const position = event.data.getLocalPosition(graphics);
+        const position = event.getLocalPosition(graphics);
         this.props.onMouseMove({ offsetX: position.x, offsetY: position.y });
       }
     };
@@ -149,7 +147,7 @@ export class WallLeft extends PIXI.Container implements IRoomPart {
       this._wallWidth,
       this.wallHeight
     );
-    sprite.transform.setFromMatrix(new PIXI.Matrix(-1, 0.5, 0, 1));
+    sprite.tileTransform.setFromMatrix(new PIXI.Matrix(-1, 0.5, 0, 1));
     sprite.x = this._getOffsetX() + this._borderWidth + this._wallWidth;
     sprite.y = this.wallY;
     sprite.tint = this._wallLeftColor;
@@ -163,7 +161,7 @@ export class WallLeft extends PIXI.Container implements IRoomPart {
       this._borderWidth,
       this._wallHeight + this._tileHeight
     );
-    border.transform.setFromMatrix(new PIXI.Matrix(-1, -0.5, 0, 1));
+    border.tileTransform.setFromMatrix(new PIXI.Matrix(-1, -0.5, 0, 1));
     border.y = this.wallY + this._wallWidth / 2;
     border.x = this._getOffsetX() + this._borderWidth;
 
@@ -178,7 +176,7 @@ export class WallLeft extends PIXI.Container implements IRoomPart {
       this._borderWidth,
       this._wallWidth
     );
-    border.transform.setFromMatrix(new PIXI.Matrix(1, 0.5, 1, -0.5));
+    border.tileTransform.setFromMatrix(new PIXI.Matrix(1, 0.5, 1, -0.5));
     border.x = this._getOffsetX() + 0;
     border.y = this.wallY + this._wallWidth / 2 - this._borderWidth / 2;
 

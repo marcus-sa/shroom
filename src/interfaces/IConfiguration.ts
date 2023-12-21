@@ -1,5 +1,7 @@
+import { Texture } from 'pixi.js';
+
 export interface IConfiguration {
-  placeholder?: PIXI.Texture;
+  placeholder?: Texture;
   tileColor?: { floorColor?: string; leftFade?: number; rightFade?: number };
   avatarMovementDuration?: number;
   furnitureMovementDuration?: number;

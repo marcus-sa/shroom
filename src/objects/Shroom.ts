@@ -1,3 +1,5 @@
+import { Application } from 'pixi.js';
+
 import { AnimationTicker } from "./animation/AnimationTicker";
 import { AvatarLoader } from "./avatar/AvatarLoader";
 import { FurnitureLoader } from "./furniture/FurnitureLoader";
@@ -13,7 +15,7 @@ export class Shroom {
   static create(
     options: {
       resourcePath?: string;
-      application: PIXI.Application;
+      application: Application;
     } & Partial<Dependencies>
   ) {
     return this.createShared(options).for(options.application);
@@ -42,7 +44,7 @@ export class Shroom {
     const _configuration = configuration ?? {};
 
     return {
-      for: (application: PIXI.Application) => {
+      for: (application: Application) => {
         const _animationTicker =
           animationTicker ?? AnimationTicker.create(application);
 

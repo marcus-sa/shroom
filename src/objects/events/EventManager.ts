@@ -12,7 +12,7 @@ import {
   TILE_CURSOR,
 } from "./interfaces/IEventGroup";
 import { IEventManager } from "./interfaces/IEventManager";
-import { InteractionEvent } from "pixi.js";
+import { FederatedEvent } from "pixi.js";
 
 export class EventManager {
   private _nodes = new Map<IEventTarget, EventManagerNode>();
@@ -20,14 +20,14 @@ export class EventManager {
   private _currentOverElements: Set<EventManagerNode> = new Set();
   private _pointerDownElements: Set<EventManagerNode> = new Set();
 
-  click(event: InteractionEvent, x: number, y: number) {
+  click(event: FederatedEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     new Propagation(event, elements.activeNodes, (target, event) =>
       target.triggerClick(event)
     );
   }
 
-  pointerDown(event: InteractionEvent, x: number, y: number) {
+  pointerDown(event: FederatedEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
     this._pointerDownElements = new Set(elements.activeNodes);
@@ -37,7 +37,7 @@ export class EventManager {
     );
   }
 
-  pointerUp(event: InteractionEvent, x: number, y: number) {
+  pointerUp(event: FederatedEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
 
     const elementsSet = new Set(elements.activeNodes);
@@ -57,7 +57,7 @@ export class EventManager {
     });
   }
 
-  move(event: InteractionEvent, x: number, y: number) {
+  move(event: FederatedEvent, x: number, y: number) {
     const elements = this._performHitTest(x, y);
     const current = new Set(
       elements.activeNodes.filter(
@@ -174,7 +174,7 @@ class Propagation {
   private _stopped = false;
 
   constructor(
-    private event: InteractionEvent,
+    private event: FederatedEvent<any>,
     private path: EventManagerNode[],
     private _trigger: (target: IEventTarget, event: IEventManagerEvent) => void
   ) {
@@ -205,14 +205,14 @@ class Propagation {
     }
   }
 
-  private _createEvent(): IEventManagerEvent {
+  private _createEvent(): IEventManagerEvent<UIEvent> {
     return {
       interactionEvent: this.event,
-      mouseEvent: this.event.data.originalEvent,
+      mouseEvent: this.event.originalEvent,
       stopPropagation: () => {
         this._stopped = true;
       },
-      skip: (...identifiers) => {
+      skip: (...identifiers: EventGroupIdentifierParam[]) => {
         const add = (identifier: EventGroupIdentifierParam) => {
           if (Array.isArray(identifier)) {
             identifier.forEach((value) => add(value));
@@ -223,7 +223,7 @@ class Propagation {
 
         add(identifiers);
       },
-      skipExcept: (...identifiers) => {
+      skipExcept: (...identifiers: EventGroupIdentifierParam[]) => {
         const add = (identifier: EventGroupIdentifierParam) => {
           if (Array.isArray(identifier)) {
             identifier.forEach((value) => add(value));

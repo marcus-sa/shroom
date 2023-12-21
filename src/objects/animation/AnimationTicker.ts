@@ -1,3 +1,5 @@
+import { Application } from 'pixi.js';
+
 import { IAnimationTicker } from "../../interfaces/IAnimationTicker";
 
 const ANIM_FPS = 24;
@@ -12,13 +14,13 @@ export class AnimationTicker implements IAnimationTicker {
     (frame: number, accurateFrame: number) => void
   >();
 
-  constructor(application: PIXI.Application) {
+  constructor(application: Application) {
     application.ticker.maxFPS = TARGET_FPS;
     application.ticker.minFPS = ANIM_FPS;
     application.ticker.add(() => this._increment());
   }
 
-  static create(application: PIXI.Application) {
+  static create(application: Application) {
     return new AnimationTicker(application);
   }
 

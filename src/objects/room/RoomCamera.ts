@@ -1,23 +1,24 @@
-import * as PIXI from "pixi.js";
+import { Container, Rectangle, Point, FederatedPointerEvent } from "pixi.js";
 import { Easing, Tween, update } from '@tweenjs/tween.js';
 
 import { Room } from "./Room";
+import { getParentGlobalPosition } from '../../util/getParentGlobalPosition';
 
-export class RoomCamera extends PIXI.Container {
+export class RoomCamera extends Container {
   private _state: RoomCameraState = { type: "WAITING" };
 
   private _offsets: { x: number; y: number } = { x: 0, y: 0 };
   private _animatedOffsets: { x: number; y: number } = { x: 0, y: 0 };
 
-  private _container: PIXI.Container;
-  private _parentContainer: PIXI.Container;
+  private _container: Container;
+  private _parentContainer: Container;
 
   private _tween: any;
   private _target: EventTarget;
 
   constructor(
     private readonly _room: Room,
-    private readonly _parentBounds: () => PIXI.Rectangle,
+    private readonly _parentBounds: () => Rectangle,
     private readonly _options?: RoomCameraOptions
   ) {
     super();
@@ -25,11 +26,11 @@ export class RoomCamera extends PIXI.Container {
     const target = this._options?.target ?? window;
     this._target = target;
 
-    this._parentContainer = new PIXI.Container();
+    this._parentContainer = new Container();
     this._parentContainer.hitArea = this._parentBounds();
     this._parentContainer.interactive = true;
 
-    this._container = new PIXI.Container();
+    this._container = new Container();
     this._container.addChild(this._room);
     this._parentContainer.addChild(this._container);
 
@@ -68,7 +69,7 @@ export class RoomCamera extends PIXI.Container {
     this._target.removeEventListener("pointerup", this._handlePointerUp as any);
   }
 
-  private _handlePointerUp = (event: PointerEvent) => {
+  private _handlePointerUp = (event: FederatedPointerEvent) => {
     if (this._state.type === "WAITING" || this._state.type === "ANIMATE_ZERO")
       return;
 
@@ -85,18 +86,18 @@ export class RoomCamera extends PIXI.Container {
     }
   };
 
-  private _handlePointerDown = (event: PIXI.InteractionEvent) => {
-    const position = event.data.getLocalPosition(this.parent);
+  private _handlePointerDown = (event: FederatedPointerEvent) => {
+    const position = event.getLocalPosition(this.parent);
     if (this._state.type === "WAITING") {
-      this._enterWaitingForDistance(position, event.data.pointerId);
+      this._enterWaitingForDistance(position, event.pointerId);
     } else if (this._state.type === "ANIMATE_ZERO") {
-      this._changingDragWhileAnimating(position, event.data.pointerId);
+      this._changingDragWhileAnimating(position, event.pointerId);
     }
   };
 
-  private _handlePointerMove = (event: PointerEvent) => {
-    const box = this._room.application.view.getBoundingClientRect!();
-    const position = new PIXI.Point(
+  private _handlePointerMove = (event: FederatedPointerEvent) => {
+    const box = this._room.application.canvas.getBoundingClientRect!();
+    const position = new Point(
       event.clientX - box.x - this.parent.worldTransform.tx,
       event.clientY - box.y - this.parent.worldTransform.tx
     );
@@ -146,8 +147,12 @@ export class RoomCamera extends PIXI.Container {
   }
 
   private _isOutOfBounds(offsets: { x: number; y: number }) {
-    const roomX = this.parent.transform.position.x + this._room.x;
-    const roomY = this.parent.transform.position.y + this._room.y;
+    const roomX = this.parent.position.x + this._room.x;
+    const roomY = this.parent.position.y + this._room.y;
+
+    // const parentPosition = getParentGlobalPosition(this);
+    // const roomX = parentPosition.x + this._room.x;
+    // const roomY = parentPosition.y + this._room.y;
 
     if (roomX + this._room.roomWidth + offsets.x <= 0) {
       // The room is out of bounds to the left side.
@@ -190,6 +195,7 @@ export class RoomCamera extends PIXI.Container {
     const tween = new Tween(newPos)
       .to({ x: 0, y: 0 }, duration)
       .easing(Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+      // @ts-expect-error types mismatch
       .onUpdate((value: number) => {
         this._animatedOffsets = newPos;
 
@@ -233,7 +239,7 @@ export class RoomCamera extends PIXI.Container {
     this._updatePosition();
   }
 
-  private _changingDragWhileAnimating(position: PIXI.Point, pointerId: number) {
+  private _changingDragWhileAnimating(position: Point, pointerId: number) {
     this._offsets = this._animatedOffsets;
     this._animatedOffsets = { x: 0, y: 0 };
     this._tween.stop();
@@ -251,7 +257,7 @@ export class RoomCamera extends PIXI.Container {
     this._updatePosition();
   }
 
-  private _enterWaitingForDistance(position: PIXI.Point, pointerId: number) {
+  private _enterWaitingForDistance(position: Point, pointerId: number) {
     this._state = {
       type: "WAIT_FOR_DISTANCE",
       pointerId: pointerId,
@@ -262,7 +268,7 @@ export class RoomCamera extends PIXI.Container {
 
   private _tryUpgradeWaitForDistance(
     state: CameraWaitForDistanceState,
-    position: PIXI.Point,
+    position: Point,
     pointerId: number
   ) {
     if (state.pointerId !== pointerId) return;
@@ -287,7 +293,7 @@ export class RoomCamera extends PIXI.Container {
 
   private _updateDragging(
     state: CameraDraggingState,
-    position: PIXI.Point,
+    position: Point,
     pointerId: number
   ) {
     if (state.pointerId !== pointerId) return;
