@@ -1,9 +1,7 @@
 import * as PIXI from "pixi.js";
+import { Easing, Tween, update } from '@tweenjs/tween.js';
 
 import { Room } from "./Room";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TWEEN = require("tween.js");
 
 export class RoomCamera extends PIXI.Container {
   private _state: RoomCameraState = { type: "WAITING" };
@@ -50,7 +48,7 @@ export class RoomCamera extends PIXI.Container {
       if (last == null) last = performance.now();
       const value = performance.now() - last;
 
-      TWEEN.update(value);
+      update(value);
     });
   }
 
@@ -97,7 +95,7 @@ export class RoomCamera extends PIXI.Container {
   };
 
   private _handlePointerMove = (event: PointerEvent) => {
-    const box = this._room.application.view.getBoundingClientRect();
+    const box = this._room.application.view.getBoundingClientRect!();
     const position = new PIXI.Point(
       event.clientX - box.x - this.parent.worldTransform.tx,
       event.clientY - box.y - this.parent.worldTransform.tx
@@ -189,9 +187,9 @@ export class RoomCamera extends PIXI.Container {
 
     const newPos = { ...this._animatedOffsets };
 
-    const tween = new TWEEN.Tween(newPos)
+    const tween = new Tween(newPos)
       .to({ x: 0, y: 0 }, duration)
-      .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+      .easing(Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
       .onUpdate((value: number) => {
         this._animatedOffsets = newPos;
 
