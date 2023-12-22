@@ -1,3 +1,5 @@
+import type { Point } from 'pixi.js';
+
 import { getTilePosition } from "./getTilePosition";
 
 export function getTilePositionForTile(roomX: number, roomY: number) {
@@ -9,7 +11,7 @@ export function getTilePositionForTile(roomX: number, roomY: number) {
 }
 
 export interface TilePositionForTile {
-  left: PIXI.Point;
-  right: PIXI.Point;
-  top: PIXI.Point;
+  left: Point;
+  right: Point;
+  top: Point;
 }

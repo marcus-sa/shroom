@@ -1,14 +1,16 @@
+import { Container } from 'pixi.js';
+
 import { MaskNode } from "../../interfaces/IRoomVisualization";
 import { IFurnitureRoomVisualization } from "./BaseFurniture";
 
 export class FurnitureRoomVisualization implements IFurnitureRoomVisualization {
-  constructor(private _container: PIXI.Container) {}
+  constructor(private _container: Container) {}
 
   public get container() {
     return this._container;
   }
 
-  static fromContainer(container: PIXI.Container) {
+  static fromContainer(container: Container) {
     return new FurnitureRoomVisualization(container);
   }
 

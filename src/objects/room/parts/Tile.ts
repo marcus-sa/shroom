@@ -89,7 +89,7 @@ export class Tile extends PIXI.Container implements IRoomPart {
 
     tile.tilePosition = this.tilePositions;
 
-    tile.transform.setFromMatrix(tileMatrix);
+    tile.tileTransform.setFromMatrix(tileMatrix);
     tile.width = 32;
     tile.height = 32;
     tile.tint = this._roomPartData?.tileTopColor ?? 0;
@@ -110,7 +110,7 @@ export class Tile extends PIXI.Container implements IRoomPart {
 
     borderLeft.tilePosition = this.tilePositions;
 
-    borderLeft.transform.setFromMatrix(borderLeftMatrix);
+    borderLeft.tileTransform.setFromMatrix(borderLeftMatrix);
     borderLeft.width = 32;
     borderLeft.height = this.tileHeight;
     borderLeft.tint = this._roomPartData?.tileLeftColor ?? 0;
@@ -120,7 +120,7 @@ export class Tile extends PIXI.Container implements IRoomPart {
     );
     borderRight.tilePosition = this.tilePositions;
 
-    borderRight.transform.setFromMatrix(borderRightMatrix);
+    borderRight.tileTransform.setFromMatrix(borderRightMatrix);
     borderRight.width = 32;
     borderRight.height = this.tileHeight;
     borderRight.tint = this._roomPartData?.tileRightColor ?? 0;

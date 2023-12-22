@@ -285,7 +285,7 @@ export class BaseAvatar extends PIXI.Container implements IEventGroup {
     drawDefinition: AvatarDrawDefinition,
     currentFrame: number
   ) {
-    if (this._destroyed) throw new Error("BaseAvatar was destroyed already");
+    if (this.destroyed) throw new Error("BaseAvatar was destroyed already");
     if (!this.mounted) return;
 
     this._sprites.forEach((value) => {
@@ -350,7 +350,7 @@ export class BaseAvatar extends PIXI.Container implements IEventGroup {
 
         switch (part.ink) {
           case 33:
-            sprite.blendMode = PIXI.BLEND_MODES.ADD;
+            sprite.blendMode = 'add';
             break;
         }
 
@@ -435,7 +435,7 @@ export class BaseAvatar extends PIXI.Container implements IEventGroup {
           skipCaching: this._skipCaching,
         })
         .then((result) => {
-          if (this._destroyed) return;
+          if (this.destroyed) return;
           if (requestId !== this._updateId) return;
 
           this._avatarLoaderResult = result;

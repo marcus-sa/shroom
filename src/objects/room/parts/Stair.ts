@@ -62,7 +62,7 @@ export class Stair extends PIXI.Container implements IRoomPart {
     ) {
       const tile = new PIXI.TilingSprite(texture ?? PIXI.Texture.WHITE);
       tile.tilePosition = tilePosition;
-      tile.transform.setFromMatrix(matrix);
+      tile.tileTransform.setFromMatrix(matrix);
 
       tile.tint = tint;
 
@@ -105,7 +105,7 @@ export class Stair extends PIXI.Container implements IRoomPart {
     function createSprite(matrix: PIXI.Matrix, tint: number) {
       const tile = new PIXI.TilingSprite(texture ?? PIXI.Texture.WHITE);
       tile.tilePosition = new PIXI.Point(0, 0);
-      tile.transform.setFromMatrix(matrix);
+      tile.tileTransform.setFromMatrix(matrix);
 
       tile.tint = tint;
 

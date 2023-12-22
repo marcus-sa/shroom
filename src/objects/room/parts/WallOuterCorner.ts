@@ -39,7 +39,7 @@ export class WallOuterCorner extends PIXI.Container implements IRoomPart {
       this._borderWidth,
       this._borderWidth
     );
-    border.transform.setFromMatrix(new PIXI.Matrix(1, 0.5, 1, -0.5));
+    border.tileTransform.setFromMatrix(new PIXI.Matrix(1, 0.5, 1, -0.5));
     border.tint = this._wallTopColor;
     border.x = -this._borderWidth;
     border.y =

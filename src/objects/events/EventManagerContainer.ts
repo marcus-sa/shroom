@@ -12,38 +12,38 @@ export class EventManagerContainer {
 
     _application.ticker.add(this._updateRectangle);
 
-    const interactionManager: PIXI.InteractionManager = this._application
-      .renderer.plugins.interaction;
-
-    interactionManager.addListener(
-      "pointermove",
-      (event: FederatedPointerEvent) => {
-        const position = event.getLocalPosition(this._application.stage);
-
-        this._eventManager.move(event, position.x, position.y);
-      },
-      true
-    );
-
-    interactionManager.addListener(
-      "pointerup",
-      (event: FederatedPointerEvent) => {
-        const position = event.getLocalPosition(this._application.stage);
-
-        this._eventManager.pointerUp(event, position.x, position.y);
-      },
-      true
-    );
-
-    interactionManager.addListener(
-      "pointerdown",
-      (event: FederatedPointerEvent) => {
-        const position = event.getLocalPosition(this._application.stage);
-
-        this._eventManager.pointerDown(event, position.x, position.y);
-      },
-      true
-    );
+    // const interactionManager: PIXI.InteractionManager = this._application
+    //   .renderer.plugins.interaction;
+    //
+    // interactionManager.addListener(
+    //   "pointermove",
+    //   (event: FederatedPointerEvent) => {
+    //     const position = event.getLocalPosition(this._application.stage);
+    //
+    //     this._eventManager.move(event, position.x, position.y);
+    //   },
+    //   true
+    // );
+    //
+    // interactionManager.addListener(
+    //   "pointerup",
+    //   (event: FederatedPointerEvent) => {
+    //     const position = event.getLocalPosition(this._application.stage);
+    //
+    //     this._eventManager.pointerUp(event, position.x, position.y);
+    //   },
+    //   true
+    // );
+    //
+    // interactionManager.addListener(
+    //   "pointerdown",
+    //   (event: FederatedPointerEvent) => {
+    //     const position = event.getLocalPosition(this._application.stage);
+    //
+    //     this._eventManager.pointerDown(event, position.x, position.y);
+    //   },
+    //   true
+    // );
   }
 
   destroy() {
